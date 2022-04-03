@@ -6,49 +6,53 @@ names = []
 
 value = {}
 
+step = 0
 count = 0
 for line in text.split('\n'):
-    if count == 9 and len(line) > 1:
-        value['prods'][0]['price'] = line
+    if step == 9 and len(line) > 0:
+        value['prods'][count]['price'] = line
+        step += 1
+        count += 1
 
-    if count == 8 and len(line) > 1:
-        value['prods'][0]['qtd'] = line
-        count = 9
+    if step == 8 and len(line) > 0:
+        value['prods'][count]['qtd'] = line
+        step = 9
 
-    if count == 7 and len(line) > 1:
+    if step == 7 and len(line) > 0 and not line.startswith('QTD'):
         if not value['prods'][0].get('var'):
-            value['prods'][0]['var'] = []
+            value['prods'][count]['var'] = []
 
-        value['prods'][0]['var'].append(line)
+        value['prods'][count]['var'].append(line)
 
-    if count == 5 and len(line) > 1:
-        value['prods'][0]['desc'] = line
-        count = 6
+    if step == 5 and len(line) > 0:
+        value['prods'][count]['desc'] = line
+        step = 6
 
-    if count == 4 and len(line) > 1:
+    if step == 4 and len(line) > 0:
         n = line.split(' ')
         value['prods'].append({
             'n': n[0],
             'cod': n[1]
         })
-        count = 5
+        step = 5
 
-    if count == 2 and len(line) > 1:
+    if step == 2 and len(line) > 0:
         value = { 'name': line, 'prods': []}
         names.append(value)
-        count = 3
+        step = 3
 
     if line.startswith('QTD'):
-        count = 8
+        step = 8
 
     if line.startswith('VARIAÇÃO'):
-        count = 7
+        step = 7
 
     if line.startswith('Nº'):
-        count = 4
+        step = 4
 
     if (line.startswith('NOME:')):
-        count = count > 2 and 1 or 2
+        step = step > 2 and 1 or 2
+        count = 0
    
 a = open('teste2.txt', 'w')
 for name in names:
